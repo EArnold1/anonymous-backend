@@ -43,13 +43,43 @@ const addMessage: RequestHandler = async (req, res) => {
 
 const getMessages: RequestHandler = async (req, res) => {
   const { id } = req.user!;
+  const { page, limit } = req.query as { page: string; limit: string };
+
+  const startIndex = (+page - 1) * +limit;
+
+  const endIndex = +page * +limit;
+
+  let nextPage = {
+    page: 0,
+    limit: 0,
+  };
+  let prevPage = {
+    page: 0,
+    limit: 0,
+  };
   try {
-    const messages = await MessageDB.find({ userId: id });
+    // get messages
+    const messages = await MessageDB.find({ userId: id })
+      .skip(startIndex)
+      .limit(+limit)
+      .exec();
 
     if (!messages)
       return res.status(404).json({ errors: [{ msg: 'Nothing found' }] });
 
-    res.status(200).json({ messages });
+    // where to end
+    if (startIndex > 0) {
+      prevPage.page = +page - 1;
+      prevPage.limit = +limit;
+    }
+
+    // where to stop
+    if (endIndex < (await MessageDB.find({ userId: id })).length) {
+      nextPage.page = +page + 1;
+      nextPage.limit = +limit;
+    }
+
+    res.status(200).json({ messages, nextPage, prevPage });
   } catch (err) {
     console.log(err);
     res.status(500).json({ errors: [{ msg: 'Server Error' }] });
@@ -59,13 +89,16 @@ const getMessages: RequestHandler = async (req, res) => {
 const getLatestMessage: RequestHandler = async (req, res) => {
   const { id } = req.user!;
   try {
+    // find messages & sort by date (asc)
     const message = await MessageDB.find({ userId: id }).sort({ text: 'asc' });
 
     if (!message)
       return res.status(404).json({ errors: [{ msg: 'Nothing found' }] });
 
+    // check if message array is empty
     if (message.length === 0) return res.status(200).json({ message });
 
+    // get first element in array
     res.status(200).json({ message: message[0] });
   } catch (err) {
     console.log(err);

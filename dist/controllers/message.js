@@ -45,11 +45,36 @@ const addMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.addMessage = addMessage;
 const getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
+    const { page, limit } = req.query;
+    const startIndex = (+page - 1) * +limit;
+    const endIndex = +page * +limit;
+    let nextPage = {
+        page: 0,
+        limit: 0,
+    };
+    let prevPage = {
+        page: 0,
+        limit: 0,
+    };
     try {
-        const messages = yield messageSchema_1.default.find({ userId: id });
+        // get messages
+        const messages = yield messageSchema_1.default.find({ userId: id })
+            .skip(startIndex)
+            .limit(+limit)
+            .exec();
         if (!messages)
             return res.status(404).json({ errors: [{ msg: 'Nothing found' }] });
-        res.status(200).json({ messages });
+        // where to end
+        if (startIndex > 0) {
+            prevPage.page = +page - 1;
+            prevPage.limit = +limit;
+        }
+        // where to stop
+        if (endIndex < (yield messageSchema_1.default.find({ userId: id })).length) {
+            nextPage.page = +page + 1;
+            nextPage.limit = +limit;
+        }
+        res.status(200).json({ messages, nextPage, prevPage });
     }
     catch (err) {
         console.log(err);
@@ -60,11 +85,14 @@ exports.getMessages = getMessages;
 const getLatestMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
     try {
+        // find messages & sort by date (asc)
         const message = yield messageSchema_1.default.find({ userId: id }).sort({ text: 'asc' });
         if (!message)
             return res.status(404).json({ errors: [{ msg: 'Nothing found' }] });
+        // check if message array is empty
         if (message.length === 0)
             return res.status(200).json({ message });
+        // get first element in array
         res.status(200).json({ message: message[0] });
     }
     catch (err) {
