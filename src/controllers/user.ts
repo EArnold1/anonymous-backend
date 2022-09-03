@@ -124,4 +124,20 @@ const loginUser: RequestHandler = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser };
+const getUser: RequestHandler = async (req, res) => {
+  try {
+    // find user
+    const user = await UserDB.findById(req.user!.id).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ errors: [{ msg: 'User not found' }] });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ errors: [{ msg: 'Server Error' }] });
+  }
+};
+
+export { registerUser, loginUser, getUser };

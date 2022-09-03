@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { loginUser } from '../../controllers/user';
+import { loginUser, getUser } from '../../controllers/user';
+import auth from '../../middlewares/auth';
 const router = Router();
 
 //route POST /api/auth
@@ -14,5 +15,10 @@ router.post(
   ],
   loginUser
 );
+
+//route GET /api/auth
+//@desc get user
+//access Private
+router.get('/auth', auth, getUser);
 
 export default router;
