@@ -17,7 +17,7 @@ router.post(
   addMessage
 );
 
-//route GET /api/message
+//route GET /api/message?page=1&limit=4
 //@desc get messages
 //access Private
 router.get('/messages', auth, getMessages);

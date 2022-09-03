@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { registerUser } from '../../controllers/user';
+import { findUser, registerUser } from '../../controllers/user';
 const router = Router();
 
 //route POST /api/user
@@ -15,5 +15,10 @@ router.post(
   ],
   registerUser
 );
+
+//route GET /api/user/:username
+//@desc find user
+//access Public
+router.get('/user/:username', findUser);
 
 export default router;

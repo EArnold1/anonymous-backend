@@ -140,4 +140,23 @@ const getUser: RequestHandler = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, getUser };
+const findUser: RequestHandler = async (req, res) => {
+  const { username } = req.params as { username: string };
+  try {
+    // find user
+    const user = await UserDB.findOne({ username });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ errors: [{ msg: 'User not found', found: false }] });
+    }
+
+    res.status(200).json({ msg: 'found', found: true });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ errors: [{ msg: 'Server Error' }] });
+  }
+};
+
+export { registerUser, loginUser, getUser, findUser };

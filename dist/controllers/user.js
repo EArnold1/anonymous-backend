@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.loginUser = exports.registerUser = void 0;
+exports.findUser = exports.getUser = exports.loginUser = exports.registerUser = void 0;
 const express_validator_1 = require("express-validator");
 const userSchema_1 = __importDefault(require("../models/userSchema"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
@@ -122,3 +122,21 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUser = getUser;
+const findUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username } = req.params;
+    try {
+        // find user
+        const user = yield userSchema_1.default.findOne({ username });
+        if (!user) {
+            return res
+                .status(404)
+                .json({ errors: [{ msg: 'User not found', found: false }] });
+        }
+        res.status(200).json({ msg: 'found', found: true });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ errors: [{ msg: 'Server Error' }] });
+    }
+});
+exports.findUser = findUser;

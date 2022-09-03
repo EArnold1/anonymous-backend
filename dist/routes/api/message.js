@@ -12,7 +12,7 @@ const router = (0, express_1.Router)();
 //@desc send message
 //access Public
 router.post('/message/:username', [(0, express_validator_1.check)('text', 'Please add a message').not().isEmpty()], message_1.addMessage);
-//route GET /api/message
+//route GET /api/message?page=1&limit=4
 //@desc get messages
 //access Private
 router.get('/messages', auth_1.default, message_1.getMessages);
