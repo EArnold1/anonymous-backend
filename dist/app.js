@@ -6,9 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = require("body-parser");
 const cors_1 = __importDefault(require("cors"));
+const db_1 = __importDefault(require("./db/db"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
+// connect db
+(0, db_1.default)();
 // middlewares
 app.use((0, body_parser_1.json)());
 app.use((0, cors_1.default)());
