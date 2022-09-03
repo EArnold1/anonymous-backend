@@ -10,6 +10,7 @@ const db_1 = __importDefault(require("./db/db"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const user_1 = __importDefault(require("./routes/api/user"));
 const auth_1 = __importDefault(require("./routes/api/auth"));
+const message_1 = __importDefault(require("./routes/api/message"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 // connect db
@@ -19,6 +20,7 @@ app.use((0, body_parser_1.json)());
 app.use((0, cors_1.default)());
 app.use('/api', user_1.default);
 app.use('/api', auth_1.default);
+app.use('/api', message_1.default);
 app.get('/', (req, res) => {
     res.json({ msg: 'you are here' });
 });
