@@ -16,4 +16,8 @@ router.post('/message/:username', [(0, express_validator_1.check)('text', 'Pleas
 //@desc get messages
 //access Private
 router.get('/messages', auth_1.default, message_1.getMessages);
+//route GET /api/message
+//@desc get latest message
+//access Private
+router.get('/message', auth_1.default, message_1.getLatestMessage);
 exports.default = router;

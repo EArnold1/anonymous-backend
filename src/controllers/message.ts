@@ -56,4 +56,21 @@ const getMessages: RequestHandler = async (req, res) => {
   }
 };
 
-export { addMessage, getMessages };
+const getLatestMessage: RequestHandler = async (req, res) => {
+  const { id } = req.user!;
+  try {
+    const message = await MessageDB.find({ userId: id }).sort({ text: 'asc' });
+
+    if (!message)
+      return res.status(404).json({ errors: [{ msg: 'Nothing found' }] });
+
+    if (message.length === 0) return res.status(200).json({ message });
+
+    res.status(200).json({ message: message[0] });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ errors: [{ msg: 'Server Error' }] });
+  }
+};
+
+export { addMessage, getMessages, getLatestMessage };

@@ -1,6 +1,10 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { addMessage, getMessages } from '../../controllers/message';
+import {
+  addMessage,
+  getLatestMessage,
+  getMessages,
+} from '../../controllers/message';
 import auth from '../../middlewares/auth';
 const router = Router();
 
@@ -17,5 +21,10 @@ router.post(
 //@desc get messages
 //access Private
 router.get('/messages', auth, getMessages);
+
+//route GET /api/message
+//@desc get latest message
+//access Private
+router.get('/message', auth, getLatestMessage);
 
 export default router;
