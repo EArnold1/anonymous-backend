@@ -41,4 +41,19 @@ const addMessage: RequestHandler = async (req, res) => {
   }
 };
 
-export { addMessage };
+const getMessages: RequestHandler = async (req, res) => {
+  const { id } = req.user!;
+  try {
+    const messages = await MessageDB.find({ userId: id });
+
+    if (!messages)
+      return res.status(404).json({ errors: [{ msg: 'Nothing found' }] });
+
+    res.status(200).json({ messages });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ errors: [{ msg: 'Server Error' }] });
+  }
+};
+
+export { addMessage, getMessages };

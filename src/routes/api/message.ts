@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { addMessage } from '../../controllers/message';
+import { addMessage, getMessages } from '../../controllers/message';
 import auth from '../../middlewares/auth';
 const router = Router();
 
-//route POST /api/message
+//route GET /api/message/:username
 //@desc send message
 //access Public
 router.get(
@@ -12,5 +12,10 @@ router.get(
   [check('text', 'Please add a message').not().isEmpty()],
   addMessage
 );
+
+//route GET /api/message
+//@desc get messages
+//access Private
+router.get('/messages', auth, getMessages);
 
 export default router;

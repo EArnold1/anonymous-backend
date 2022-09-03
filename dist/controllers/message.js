@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addMessage = void 0;
+exports.getMessages = exports.addMessage = void 0;
 const express_validator_1 = require("express-validator");
 const messageSchema_1 = __importDefault(require("../models/messageSchema"));
 const userSchema_1 = __importDefault(require("../models/userSchema"));
@@ -43,3 +43,17 @@ const addMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.addMessage = addMessage;
+const getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.user;
+    try {
+        const messages = yield messageSchema_1.default.find({ userId: id });
+        if (!messages)
+            return res.status(404).json({ errors: [{ msg: 'Nothing found' }] });
+        res.status(200).json({ messages });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ errors: [{ msg: 'Server Error' }] });
+    }
+});
+exports.getMessages = getMessages;
