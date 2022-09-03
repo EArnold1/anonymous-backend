@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerUser = void 0;
+exports.loginUser = exports.registerUser = void 0;
 const express_validator_1 = require("express-validator");
 const userSchema_1 = __importDefault(require("../models/userSchema"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
@@ -71,3 +71,39 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.registerUser = registerUser;
+const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { username, password } = req.body;
+    try {
+        // user check
+        let user = yield userSchema_1.default.findOne({ username });
+        if (!user)
+            return res.status(404).json({ errors: [{ msg: 'Invalid credentials' }] });
+        // password match
+        const isMatch = yield bcryptjs_1.default.compare(password, user.password);
+        if (!isMatch)
+            return res.status(404).json({ errors: [{ msg: 'Invalid credentials' }] });
+        // preparing jwt payload
+        const payload = {
+            user: {
+                id: user.id,
+            },
+        };
+        // signing jwt token
+        jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: '1d',
+        }, (err, token) => __awaiter(void 0, void 0, void 0, function* () {
+            if (err)
+                throw err;
+            res.status(200).json({ token });
+        }));
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ errors: [{ msg: 'Server Error' }] });
+    }
+});
+exports.loginUser = loginUser;

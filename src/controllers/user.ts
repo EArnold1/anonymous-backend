@@ -76,4 +76,52 @@ const registerUser: RequestHandler = async (req, res) => {
   }
 };
 
-export { registerUser };
+const loginUser: RequestHandler = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  const { username, password } = req.body as {
+    username: string;
+    password: string;
+  };
+  try {
+    // user check
+    let user = await UserDB.findOne({ username });
+
+    if (!user)
+      return res.status(404).json({ errors: [{ msg: 'Invalid credentials' }] });
+
+    // password match
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch)
+      return res.status(404).json({ errors: [{ msg: 'Invalid credentials' }] });
+
+    // preparing jwt payload
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    // signing jwt token
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET!,
+      {
+        expiresIn: '1d',
+      },
+      async (err, token) => {
+        if (err) throw err;
+
+        res.status(200).json({ token });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ errors: [{ msg: 'Server Error' }] });
+  }
+};
+
+export { registerUser, loginUser };

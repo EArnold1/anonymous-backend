@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './db/db';
 import dotenv from 'dotenv';
 import user from './routes/api/user';
+import auth from './routes/api/auth';
 dotenv.config();
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(json());
 app.use(cors());
 
 app.use('/api', user);
+app.use('/api', auth);
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ msg: 'you are here' });
