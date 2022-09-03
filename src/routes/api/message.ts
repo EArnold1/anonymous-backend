@@ -4,10 +4,10 @@ import { addMessage, getMessages } from '../../controllers/message';
 import auth from '../../middlewares/auth';
 const router = Router();
 
-//route GET /api/message/:username
+//route POST /api/message/:username
 //@desc send message
 //access Public
-router.get(
+router.post(
   '/message/:username',
   [check('text', 'Please add a message').not().isEmpty()],
   addMessage
