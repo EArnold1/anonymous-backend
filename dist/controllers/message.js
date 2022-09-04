@@ -92,7 +92,7 @@ const getLatestMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (!message)
             return res.status(404).json({ errors: [{ msg: 'Nothing found' }] });
         // get first element in array
-        res.status(200).json({ message: message });
+        res.status(200).json({ message });
     }
     catch (err) {
         console.log(err);

@@ -98,7 +98,7 @@ const getLatestMessage: RequestHandler = async (req, res) => {
       return res.status(404).json({ errors: [{ msg: 'Nothing found' }] });
 
     // get first element in array
-    res.status(200).json({ message: message });
+    res.status(200).json({ message });
   } catch (err) {
     console.log(err);
     res.status(500).json({ errors: [{ msg: 'Server Error' }] });
