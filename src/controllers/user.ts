@@ -127,7 +127,10 @@ const loginUser: RequestHandler = async (req, res) => {
 const getUser: RequestHandler = async (req, res) => {
   try {
     // find user
-    const user = await UserDB.findById(req.user!.id).select('-password');
+    const user = await UserDB.findById(req.user!.id).select([
+      '-password',
+      '-_id',
+    ]);
 
     if (!user) {
       return res.status(404).json({ errors: [{ msg: 'User not found' }] });

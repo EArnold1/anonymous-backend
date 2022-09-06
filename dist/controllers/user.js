@@ -110,7 +110,10 @@ exports.loginUser = loginUser;
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // find user
-        const user = yield userSchema_1.default.findById(req.user.id).select('-password');
+        const user = yield userSchema_1.default.findById(req.user.id).select([
+            '-password',
+            '-_id',
+        ]);
         if (!user) {
             return res.status(404).json({ errors: [{ msg: 'User not found' }] });
         }
