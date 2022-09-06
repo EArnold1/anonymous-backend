@@ -93,15 +93,15 @@ const getLatestMessage: RequestHandler = async (req, res) => {
   const { id } = req.user!;
   try {
     // find messages & sort by date (asc)
-    const message = await MessageDB.find({ userId: id })
-      .sort({ date: -1 })
-      .limit(1);
+    const message = await MessageDB.find({ userId: id });
 
-    if (!message)
-      return res.status(404).json({ errors: [{ msg: 'Nothing found' }] });
+    if (!message || message.length === 0)
+      return res
+        .status(404)
+        .json({ errors: [{ msg: 'No message was found' }] });
 
     // get first element in array
-    res.status(200).json({ message });
+    res.status(200).json({ message: message[message.length - 1] });
   } catch (err) {
     console.log(err);
     res.status(500).json({ errors: [{ msg: 'Server Error' }] });
