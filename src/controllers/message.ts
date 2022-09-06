@@ -3,6 +3,7 @@ import { validationResult, check } from 'express-validator';
 import { MessagerModel } from '../models/messageModel';
 import MessageDB from '../models/messageSchema';
 import UserDB from '../models/userSchema';
+import sendNotification from '../notification/sendNotification';
 
 interface AddBody {
   text: string;
@@ -33,6 +34,8 @@ const addMessage: RequestHandler = async (req, res) => {
     const message = new MessageDB(messageBody);
 
     await message.save();
+
+    sendNotification(username);
 
     res.status(200).json({ msg: 'Message sent succesfully', sent: true });
   } catch (err) {

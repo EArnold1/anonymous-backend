@@ -16,6 +16,7 @@ exports.getLatestMessage = exports.getMessages = exports.addMessage = void 0;
 const express_validator_1 = require("express-validator");
 const messageSchema_1 = __importDefault(require("../models/messageSchema"));
 const userSchema_1 = __importDefault(require("../models/userSchema"));
+const sendNotification_1 = __importDefault(require("../notification/sendNotification"));
 const addMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
@@ -35,6 +36,7 @@ const addMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         };
         const message = new messageSchema_1.default(messageBody);
         yield message.save();
+        (0, sendNotification_1.default)(username);
         res.status(200).json({ msg: 'Message sent succesfully', sent: true });
     }
     catch (err) {
