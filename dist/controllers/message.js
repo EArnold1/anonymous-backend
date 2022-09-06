@@ -88,13 +88,14 @@ const getLatestMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const { id } = req.user;
     try {
         // find messages & sort by date (asc)
-        const message = yield messageSchema_1.default.find({ userId: id });
+        let message = yield messageSchema_1.default.find({ userId: id });
         if (!message || message.length === 0)
             return res
                 .status(404)
                 .json({ errors: [{ msg: 'No message was found' }] });
+        message = message[message.length - 1];
         // get first element in array
-        res.status(200).json({ message: message[message.length - 1] });
+        res.status(200).json({ message });
     }
     catch (err) {
         console.log(err);
