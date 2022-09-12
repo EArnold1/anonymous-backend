@@ -47,7 +47,7 @@ const addMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.addMessage = addMessage;
 const getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
-    const { page, limit } = req.query;
+    const { page = 1, limit = 4 } = req.query;
     const startIndex = (+page - 1) * +limit;
     const endIndex = +page * +limit;
     let nextPage = {
@@ -61,6 +61,7 @@ const getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         // get messages
         const messages = yield messageSchema_1.default.find({ userId: id })
+            .sort({ date: -1 })
             .skip(startIndex)
             .limit(+limit)
             .exec();
