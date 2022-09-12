@@ -61,7 +61,6 @@ const getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         // get messages
         const messages = yield messageSchema_1.default.find({ userId: id })
-            .sort({ date: -1 })
             .skip(startIndex)
             .limit(+limit)
             .exec();

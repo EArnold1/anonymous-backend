@@ -63,7 +63,6 @@ const getMessages: RequestHandler = async (req, res) => {
   try {
     // get messages
     const messages = await MessageDB.find({ userId: id })
-      .sort({ date: -1 })
       .skip(startIndex)
       .limit(+limit)
       .exec();
